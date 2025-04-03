@@ -20,9 +20,15 @@ export const useProductStore = create((set) => ({
 
       deleteProducts: async (productId) => {
             const res = await axios.delete(`/api/products/${productId}`)
-            console.log(res.data)
             if(!res.data.success) return {success: false, message: res.data.message}
             set(state => ({products: state.products.filter(product => product._id !== productId)}))
+            return {success: true, message: res.data.message};
+      },
+
+      updateProduct: async (productId, updateProduct) => {
+            const res = await axios.put(`/api/products/${productId}`, updateProduct)
+            if(!res.data.success) return {success: false, message: res.data.message}
+            set(state => ({products: state.products.map(product => product._id === productId ? res.data.data : product)}))
             return {success: true, message: res.data.message};
       }
 }))
